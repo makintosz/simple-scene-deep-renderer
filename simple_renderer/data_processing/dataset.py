@@ -2,7 +2,7 @@ import numpy as np
 from torch.utils.data import Dataset
 
 
-class ImageDataSet(Dataset):
+class ImageDataset(Dataset):
     def __init__(self, x: np.ndarray, y: np.ndarray) -> None:
         self._x = x.astype(np.float32)
         self._y = y.astype(np.float32)
