@@ -9,7 +9,7 @@ class SceneRenderer(ABC):
         pass
 
     @abstractmethod
-    def generate_all_frames(self, epoch: int) -> None:
+    def generate_validation_frames(self, epoch: int) -> None:
         pass
 
     @abstractmethod
