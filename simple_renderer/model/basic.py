@@ -3,6 +3,7 @@ import time
 
 import cv2.cv2 as cv2
 import numpy as np
+import pandas as pd
 import torch
 import torch.nn as nn
 import torch.nn.functional as func
@@ -22,9 +23,9 @@ class BasicSceneRenderer(SceneRenderer):
         self._device = torch.device(DEVICE)
         self._model = Network().to(self._device)
 
-    def train(self, x: np.ndarray, y: np.ndarray) -> dict:
+    def train(self, x: np.ndarray, labels: pd.DataFrame) -> dict:
         dataloader = DataLoader(
-            dataset=ImageDataset(x, y),
+            dataset=ImageDataset(x, labels),
             batch_size=self._settings["batch_size"],
             shuffle=True,
             drop_last=True,
