@@ -69,14 +69,14 @@ class BasicSceneRenderer(SceneRenderer):
             # )
 
             # middle frame
-            preview = self.generate_frame([0, 0, 0, -30, 30])
+            preview = self.generate_frame([-14, -15, 0, -60, 0])
             cv2.imwrite(
                 os.path.join(
                     "results", "validation", "middle_frame_train", f"{epoch}.jpg"
                 ),
                 preview,
             )
-            preview = self.generate_frame([2, 2, 0, 15, -15])
+            preview = self.generate_frame([3, 4, 0, 10, -20])
             cv2.imwrite(
                 os.path.join(
                     "results", "validation", "middle_frame_test", f"{epoch}.jpg"
@@ -121,38 +121,65 @@ class Network(nn.Module):
             nn.ReLU(),
             nn.Linear(16, 32),
             nn.ReLU(),
-            nn.Linear(32, 4096),
+            nn.Linear(32, 16384),
             nn.ReLU(),
         )
 
         self.unflatten = nn.Sequential(
-            nn.Unflatten(dim=-1, unflattened_size=(64, 8, 8)),
+            nn.Unflatten(dim=-1, unflattened_size=(256, 8, 8)),
         )
 
         self.convolutional = nn.Sequential(
             nn.ConvTranspose2d(
-                in_channels=64,
-                out_channels=64,
+                in_channels=256,
+                out_channels=256,
                 stride=(2, 2),
                 kernel_size=(3, 5),
                 padding=(2, 1),
             ),
-            nn.BatchNorm2d(64),
+            nn.BatchNorm2d(256),
             nn.ReLU(),
             nn.ConvTranspose2d(
-                in_channels=64,
-                out_channels=64,
+                in_channels=256,
+                out_channels=128,
                 stride=(2, 2),
                 kernel_size=(3, 7),
                 padding=(2, 1),
             ),
+            nn.BatchNorm2d(128),
+            nn.ReLU(),
+            nn.ConvTranspose2d(
+                in_channels=128,
+                out_channels=128,
+                stride=(2, 2),
+                kernel_size=(3, 5),
+                padding=(1, 1),
+            ),
+            nn.BatchNorm2d(128),
+            nn.ReLU(),
+            nn.ConvTranspose2d(
+                in_channels=128,
+                out_channels=128,
+                stride=(2, 2),
+                kernel_size=(3, 5),
+                padding=(1, 1),
+            ),
+            nn.BatchNorm2d(128),
+            nn.ReLU(),
+            nn.ConvTranspose2d(
+                in_channels=128,
+                out_channels=64,
+                stride=(2, 2),
+                kernel_size=(3, 3),
+                padding=(1, 1),
+            ),
             nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.ConvTranspose2d(
                 in_channels=64,
                 out_channels=64,
                 stride=(2, 2),
-                kernel_size=(3, 5),
+                kernel_size=(3, 3),
                 padding=(1, 1),
             ),
             nn.BatchNorm2d(64),
@@ -161,40 +188,13 @@ class Network(nn.Module):
                 in_channels=64,
                 out_channels=64,
                 stride=(2, 2),
-                kernel_size=(3, 5),
+                kernel_size=(3, 3),
                 padding=(1, 1),
             ),
             nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.ConvTranspose2d(
-                in_channels=64,
-                out_channels=32,
-                stride=(2, 2),
-                kernel_size=(3, 3),
-                padding=(1, 1),
-            ),
-            nn.BatchNorm2d(32),
-            nn.ReLU(),
-            nn.ConvTranspose2d(
-                in_channels=32,
-                out_channels=32,
-                stride=(2, 2),
-                kernel_size=(3, 3),
-                padding=(1, 1),
-            ),
-            nn.BatchNorm2d(32),
-            nn.ReLU(),
-            nn.ConvTranspose2d(
-                in_channels=32,
-                out_channels=32,
-                stride=(2, 2),
-                kernel_size=(3, 3),
-                padding=(1, 1),
-            ),
-            nn.BatchNorm2d(32),
-            nn.ReLU(),
-            nn.ConvTranspose2d(
-                in_channels=32, out_channels=3, kernel_size=(3, 3), padding=(1, 1)
+                in_channels=64, out_channels=3, kernel_size=(3, 3), padding=(1, 1)
             ),
         )
 
